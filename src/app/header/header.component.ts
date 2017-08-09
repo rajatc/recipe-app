@@ -1,7 +1,11 @@
-import { Component, 
+import { DataStorageService } from '../shared/data-storage.service';
+import { Component,
     // Output,
-    // EventEmitter 
+    // EventEmitter
 } from '@angular/core';
+import { Response } from '@angular/http';
+import { AuthService } from '../auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-header',
@@ -9,10 +13,31 @@ import { Component,
     styleUrls: ['./header.component.css']
 })
 
-export class HeaderComponent{
+export class HeaderComponent {
     // @Output() featureSelected = new EventEmitter<string>();
 
     // onSelect(feature: string){
     //     this.featureSelected.emit(feature);
     // }
+
+    constructor(private dataStorageService: DataStorageService,
+        private authService: AuthService,
+        private router: Router) {}
+
+    onSaveData() {
+        this.dataStorageService.storeRecipes().subscribe(
+            (response: Response) => {
+                console.log(response);
+            }
+        );
+    }
+
+    onFetchData() {
+        this.dataStorageService.getRecipes();
+    }
+
+    onLogout() {
+        this.authService.logout();
+        this.router.navigate(['/signin']);
+    }
 }
